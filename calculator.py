@@ -22,7 +22,6 @@ class AbstractCalculator(metaclass=ABCMeta):
         pass
 
 
-# TODO : けいさんが間違ってそう
 class BuildingDeprecationCalculator(AbstractCalculator):
     def calculate(self, dfs: Dict[str, pd.DataFrame] = {}) -> pd.DataFrame:
         # パラメーターの取得
@@ -38,9 +37,6 @@ class BuildingDeprecationCalculator(AbstractCalculator):
             for year in range(1, 1 + simulation_interval):
                 data = []
                 # パラメーターの取得
-                purchase_date = self._parameters.get_purchase_date(
-                    building_name=building_name
-                )
                 (
                     frame_interval,
                     equip_interval,
@@ -301,7 +297,9 @@ class RealEstateCashCalculator(AbstractCalculator):
                 petty_expenses_ratio = self._parameters.get_petty_expenses_ratio(
                     building_name=building_name
                 )
-                petty_expenses = int((building_expenses + deprecation_cost) * petty_expenses_ratio / 100)
+                petty_expenses = int(
+                    (building_expenses + deprecation_cost) * petty_expenses_ratio / 100
+                )
 
                 if petty_expenses > self._parameters.get_petty_expenses_upper(
                     building_name=building_name
