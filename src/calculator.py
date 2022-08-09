@@ -543,7 +543,7 @@ class RealEstateSaleSimulationCalculator(AbstractCalculator):
 class CashFlowCalculator(AbstractCalculator):
     def calculate(self, dfs: Dict[str, pd.DataFrame] = {}) -> pd.DataFrame:
         # パラメーターの設定
-        columns = ["年", "リアル収支", "課税差額", "収支差額", "物件売却益", "差額累計"]
+        columns = ["年", "リアル収支", "課税差額", "物件売却益", "収支差額", "差額累計"]
         simulation_interval = self._parameters.get_simulation_interval()
         simulation_start_year = self._parameters.get_simulation_start_year()
         building_names = self._parameters.get_building_names()
@@ -596,10 +596,6 @@ class CashFlowCalculator(AbstractCalculator):
             tax_diff = total_tax_with_real_estate - total_tax
             data.append(tax_diff)
 
-            # 収支差額の計算（リアル収支 - 課税差額）
-            diff_cash = real_cash_per_year - tax_diff
-            data.append(diff_cash)
-
             # 物件売却益の取得
             # 物件売却がある年のみ計上する
             total_profit_on_sale_of_real_estate = 0
@@ -620,15 +616,19 @@ class CashFlowCalculator(AbstractCalculator):
                     total_profit_on_sale_of_real_estate += values[0]
             data.append(total_profit_on_sale_of_real_estate)
 
+            # 収支差額の計算（リアル収支 - 課税差額）
+            diff_cash = real_cash_per_year - tax_diff + total_profit_on_sale_of_real_estate
+            data.append(diff_cash)
+
             # 差額累計の計算
-            total_diff_cash = diff_cash + total_profit_on_sale_of_real_estate
+            total_diff_cash = diff_cash
             if index != 0:
                 total_diff_cash = datas[index - 1][5] + total_diff_cash
             data.append(total_diff_cash)
 
             datas.append(data)
 
-        return pd.DataFrame(datas, columns=columns)
+        return pd.DataFrame(datas, columns=columns).set_index(keys="年", drop=True)
 
 
 class CalculatorError(Exception):
