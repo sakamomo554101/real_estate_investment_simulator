@@ -39,6 +39,12 @@ def dashboard():
     df = dfs["cash_flow_data"][["収支差額", "差額累計"]]
     st.line_chart(data=df)
 
+    # display download button
+    with open(result_file, "rb") as f:
+        st.download_button(
+            "download the zip of result data", f, file_name="result_data.zip"
+        )
+
 
 if __name__ == "__main__":
     dashboard()

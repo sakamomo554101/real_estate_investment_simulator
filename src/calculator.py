@@ -617,7 +617,9 @@ class CashFlowCalculator(AbstractCalculator):
             data.append(total_profit_on_sale_of_real_estate)
 
             # 収支差額の計算（リアル収支 - 課税差額）
-            diff_cash = real_cash_per_year - tax_diff + total_profit_on_sale_of_real_estate
+            diff_cash = (
+                real_cash_per_year - tax_diff + total_profit_on_sale_of_real_estate
+            )
             data.append(diff_cash)
 
             # 差額累計の計算
