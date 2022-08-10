@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import List, Tuple
 from datetime import datetime
 import math
+import re
 
 
 class Parameters:
@@ -189,6 +190,15 @@ class ParametersReader:
             ),
             "other_parameters": input_data.parse(input_sheet_names[5], index_col=0),
         }
+
+        # 物件名が空欄の列を削除する
+        building_names = building_df.columns
+        exclude_building_names = [
+            building_name
+            for building_name in building_names
+            if re.match("Unnamed: \d", building_name)
+        ]
+        building_df = building_df.drop(columns=exclude_building_names)
 
         # 築年数の計算（購入日を0年としてカウントする）
         def calc_building_age(s: pd.Series) -> pd.Series:
