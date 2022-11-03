@@ -34,11 +34,14 @@ class Parameters:
     def get_building_ratio(self, building_name: str) -> float:
         return self.__building_df.at["建物割合（%）", building_name]
 
-    def get_building_rent_income_per_month(self, building_name: str, rent_year: int) -> int:
+    def get_building_rent_income_per_month(
+        self, building_name: str, rent_year: int
+    ) -> int:
         if self.is_decrease_rent_ratio():
             return int(
-                self.__building_df.at["家賃収入（円/月）", building_name] *
-                float(self.get_rent_ratio(rent_year=rent_year)) / 100
+                self.__building_df.at["家賃収入（円/月）", building_name]
+                * float(self.get_rent_ratio(rent_year=rent_year))
+                / 100
             )
         else:
             return self.__building_df.at["家賃収入（円/月）", building_name]
@@ -196,21 +199,15 @@ class ParametersReader:
         income_df = input_data.parse(input_sheet_names[0], index_col=0, header=0)
         building_df = input_data.parse(input_sheet_names[1], index_col=0, header=0)
         other_dict = {
-            "rent_decrease_rate": input_data.parse(
-                input_sheet_names[2], index_col=0
-            ),
-            "basic_exemption": input_data.parse(
-                input_sheet_names[3], index_col=0
-            ),
+            "rent_decrease_rate": input_data.parse(input_sheet_names[2], index_col=0),
+            "basic_exemption": input_data.parse(input_sheet_names[3], index_col=0),
             "exemption_from_income": input_data.parse(
                 input_sheet_names[4], index_col=0
             ),
             "building_durable_life": input_data.parse(
                 input_sheet_names[5], index_col=0
             ),
-            "other_parameters": input_data.parse(
-                input_sheet_names[6], index_col=0
-            ),
+            "other_parameters": input_data.parse(input_sheet_names[6], index_col=0),
         }
 
         # 物件名が空欄の列を削除する

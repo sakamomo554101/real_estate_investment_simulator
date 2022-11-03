@@ -251,7 +251,7 @@ class RealEstateCashCalculator(AbstractCalculator):
                 data_per_building[1] = (
                     self._parameters.get_building_rent_income_per_month(
                         building_name=building_name,
-                        rent_year=(year - simulation_start_year + 1)
+                        rent_year=(year - simulation_start_year + 1),
                     )
                     * 12
                 )

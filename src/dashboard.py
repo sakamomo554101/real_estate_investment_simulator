@@ -46,19 +46,18 @@ def dashboard():
         ax2 = ax.twinx()
 
         # 収支差額の設定
-        ax.plot(df.index.values, df["収支差額"], marker ="o", linestyle = "--", color ="r")
-        ax.set_xlabel('year', fontname="MS Gothic")
-        ax.set_ylabel('cash_diff', color='r', fontname="MS Gothic")
-        ax.tick_params('y', colors="r")
+        ax.plot(df.index.values, df["収支差額"], marker="o", linestyle="--", color="r")
+        ax.set_xlabel("year", fontname="MS Gothic")
+        ax.set_ylabel("cash_diff", color="r", fontname="MS Gothic")
+        ax.tick_params("y", colors="r")
 
         # 差額累計の設定
-        ax2.plot(df.index.values, df["差額累計"], marker ="x", linestyle = "-", color ="b")
-        ax2.set_ylabel('cash_diff_sum', color='b', fontname="MS Gothic")
-        ax2.tick_params('y', colors="b")
+        ax2.plot(df.index.values, df["差額累計"], marker="x", linestyle="-", color="b")
+        ax2.set_ylabel("cash_diff_sum", color="b", fontname="MS Gothic")
+        ax2.tick_params("y", colors="b")
 
         # キャッシュフローのグラフをプロット
         st.pyplot(fig)
-
 
     # display download button
     with open(result_file, "rb") as f:
