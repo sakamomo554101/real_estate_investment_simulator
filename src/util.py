@@ -11,7 +11,9 @@ def calc_income_deduction(income: int) -> int:
     Returns:
         int: 給与所得控除額（円）
     """
-    if income <= 1625000:
+    if income <= 0:
+        return 0
+    elif income <= 1625000:
         return 550000
     elif 1625000 < income <= 1800000:
         return int(float(income) * 0.4 - 100000)
@@ -41,7 +43,7 @@ def calc_income_tax(taxable_income: int) -> int:
     elif taxable_income > 39999000:
         return int(taxable_income * 0.45 - 4796000)
     else:
-        raise ValueError(f"{taxable_income} is invalid value!")
+        return 0
 
 
 def calc_resident_tax(taxable_income: int, area: str) -> int:
