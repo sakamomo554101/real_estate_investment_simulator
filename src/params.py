@@ -1,7 +1,6 @@
 import pandas as pd
 from datetime import datetime
 from typing import List, Tuple
-from datetime import datetime
 import math
 import re
 
@@ -35,8 +34,14 @@ class Parameters:
     def get_building_ratio(self, building_name: str) -> float:
         return self.__building_df.at["建物割合（%）", building_name]
 
-    def get_building_rent_income_per_month(self, building_name: str) -> int:
-        return self.__building_df.at["家賃収入（円/月）", building_name]
+    def get_building_rent_income_per_month(self, building_name: str, rent_year: int) -> int:
+        if self.is_decrease_rent_ratio():
+            return int(
+                self.__building_df.at["家賃収入（円/月）", building_name] *
+                float(self.get_rent_ratio(rent_year=rent_year)) / 100
+            )
+        else:
+            return self.__building_df.at["家賃収入（円/月）", building_name]
 
     def get_petty_expenses_ratio(self, building_name: str) -> int:
         return self.__building_df.at["雑費割合（%）", building_name]
@@ -143,8 +148,14 @@ class Parameters:
             self.__building_df.at["物件価格初年度減少率(%/年)", building_name],
         )
 
+    def get_rent_ratio(self, rent_year: int) -> float:
+        return self.__other_dict["rent_decrease_rate"].at[rent_year, "家賃割合(%)"]
+
     def is_only_tax_calculation(self) -> bool:
         return self.__other_dict["other_parameters"].at["tax_only", "value"]
+
+    def is_decrease_rent_ratio(self) -> bool:
+        return self.__other_dict["other_parameters"].at["家賃減少", "value"]
 
     def get_building_sale_expenses(self, building_name) -> int:
         return self.__building_df.at["譲渡費用（円）", building_name]
@@ -166,6 +177,7 @@ class ParametersReader:
         input_sheet_names = [
             "income_simulation",
             "building_information",
+            "rent_decrease_rate",
             "basic_exemption",
             "exemption_from_income",
             "building_durable_life",
@@ -184,14 +196,21 @@ class ParametersReader:
         income_df = input_data.parse(input_sheet_names[0], index_col=0, header=0)
         building_df = input_data.parse(input_sheet_names[1], index_col=0, header=0)
         other_dict = {
-            "basic_exemption": input_data.parse(input_sheet_names[2], index_col=0),
-            "exemption_from_income": input_data.parse(
+            "rent_decrease_rate": input_data.parse(
+                input_sheet_names[2], index_col=0
+            ),
+            "basic_exemption": input_data.parse(
                 input_sheet_names[3], index_col=0
             ),
-            "building_durable_life": input_data.parse(
+            "exemption_from_income": input_data.parse(
                 input_sheet_names[4], index_col=0
             ),
-            "other_parameters": input_data.parse(input_sheet_names[5], index_col=0),
+            "building_durable_life": input_data.parse(
+                input_sheet_names[5], index_col=0
+            ),
+            "other_parameters": input_data.parse(
+                input_sheet_names[6], index_col=0
+            ),
         }
 
         # 物件名が空欄の列を削除する
