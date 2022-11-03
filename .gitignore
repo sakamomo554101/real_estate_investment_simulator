@@ -1,3 +1,4 @@
 src/__pycache__/*
 src/simulation_result/*
+parameters/*
 result_*.zip

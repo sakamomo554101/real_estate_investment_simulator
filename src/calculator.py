@@ -385,7 +385,8 @@ class TaxCalculator(AbstractCalculator):
 
             # 課税所得の計算
             out_s["基礎控除"] = 48 * 10000
-            out_s["課税所得"] = out_s["所得金額"] - (out_s["基礎控除"] + expenses)
+            taxable_income = out_s["所得金額"] - (out_s["基礎控除"] + expenses)
+            out_s["課税所得"] = taxable_income if taxable_income > 0 else 0
 
             # 所得税, 住民税の計算
             # TODO : 住民税は地域設定をして、計算を行うようにする

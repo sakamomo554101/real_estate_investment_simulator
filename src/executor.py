@@ -25,6 +25,15 @@ class Executor:
         reader = ParametersReader(params_file_path=self.__parameter_file_path)
         parameters = reader.read_params()
 
+        # 不動産所得を考慮しない税金のデータを作成
+        tc = TaxCalculator(parameters=parameters)
+        df = tc.calculate()
+        dfs["tax_data"] = df.copy(deep=True)
+
+        # 税金計算のみの場合は、ここで処理が終了
+        if parameters.is_only_tax_calculation():
+            return dfs
+
         # 減価償却のデータを作成
         bdc = BuildingDeprecationCalculator(parameters=parameters)
         df = bdc.calculate()
@@ -34,11 +43,6 @@ class Executor:
         lc = LoanCalculator(parameters=parameters)
         df = lc.calculate()
         dfs["loan_data"] = df.copy(deep=True)
-
-        # 不動産所得を考慮しない税金のデータを作成
-        tc = TaxCalculator(parameters=parameters)
-        df = tc.calculate()
-        dfs["tax_data"] = df.copy(deep=True)
 
         # 不動産収支の計算
         recc = RealEstateCashCalculator(parameters=parameters)

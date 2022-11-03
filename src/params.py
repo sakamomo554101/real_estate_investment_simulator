@@ -143,6 +143,9 @@ class Parameters:
             self.__building_df.at["物件価格初年度減少率(%/年)", building_name],
         )
 
+    def is_only_tax_calculation(self) -> bool:
+        return self.__other_dict["other_parameters"].at["tax_only", "value"]
+
     def get_building_sale_expenses(self, building_name) -> int:
         return self.__building_df.at["譲渡費用（円）", building_name]
 

@@ -3,6 +3,7 @@ from executor import Executor
 import os
 from datetime import datetime
 import shutil
+import matplotlib.pyplot as plt
 
 
 def dashboard():
@@ -36,8 +37,28 @@ def dashboard():
         )
 
     # display result
-    df = dfs["cash_flow_data"][["収支差額", "差額累計"]]
+    df = dfs["tax_data"][["税額"]]
     st.line_chart(data=df)
+
+    if "cash_flow_data" in dfs:
+        df = dfs["cash_flow_data"][["収支差額", "差額累計"]]
+        fig, ax = plt.subplots()
+        ax2 = ax.twinx()
+
+        # 収支差額の設定
+        ax.plot(df.index.values, df["収支差額"], marker ="o", linestyle = "--", color ="r")
+        ax.set_xlabel('year', fontname="MS Gothic")
+        ax.set_ylabel('cash_diff', color='r', fontname="MS Gothic")
+        ax.tick_params('y', colors="r")
+
+        # 差額累計の設定
+        ax2.plot(df.index.values, df["差額累計"], marker ="x", linestyle = "-", color ="b")
+        ax2.set_ylabel('cash_diff_sum', color='b', fontname="MS Gothic")
+        ax2.tick_params('y', colors="b")
+
+        # キャッシュフローのグラフをプロット
+        st.pyplot(fig)
+
 
     # display download button
     with open(result_file, "rb") as f:
